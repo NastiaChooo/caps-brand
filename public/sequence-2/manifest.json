@@ -1,0 +1,12 @@
+{
+  "basePath": "/sequence-2",
+  "prefix": "frame_",
+  "ext": "webp",
+  "pad": 4,
+  "frames": 166,
+  "width": 1000,
+  "height": 1000,
+  "fps": 24,
+  "source": "cap-detail.mp4",
+  "generatedAt": "2026-06-26T07:08:08.698Z"
+}

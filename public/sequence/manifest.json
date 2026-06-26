@@ -1,0 +1,12 @@
+{
+  "basePath": "/sequence",
+  "prefix": "frame_",
+  "ext": "webp",
+  "pad": 4,
+  "frames": 167,
+  "width": 1280,
+  "height": 720,
+  "fps": 24,
+  "source": "cap-rotation.mp4",
+  "generatedAt": "2026-06-25T19:59:53.244Z"
+}

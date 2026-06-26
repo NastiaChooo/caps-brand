@@ -1,0 +1,6 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" rx="7" fill="#060607" />
+  <!-- The hidden signature: a single ember mark on the void. -->
+  <circle cx="16" cy="16" r="5" fill="#ff5412" />
+  <circle cx="16" cy="16" r="5" fill="#ff5412" opacity="0.45" filter="blur(2px)" />
+</svg>

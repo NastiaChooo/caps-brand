@@ -1,0 +1,185 @@
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
+
+/* -----------------------------------------------------------------------------
+   BRAND — design tokens
+   A restrained, "stealth wealth" dark system: near-black stage, warm bone
+   foreground, one electric ember accent (the hidden underbrim). Everything is
+   built from these — no ad-hoc colors in components.
+----------------------------------------------------------------------------- */
+@theme {
+  /* Stage */
+  --color-void: #060607; /* page base — near-black, faint cool cast */
+  --color-stage: #0a090b; /* product-footage backdrop — frames bleed into it */
+  --color-ink: #0b0b0e; /* raised panels */
+  --color-surface: #121216; /* cards */
+  --color-line: #ffffff14; /* hairline rules (8% white) */
+  --color-line-strong: #ffffff24;
+
+  /* Foreground */
+  --color-bone: #ece9e2; /* warm off-white — never pure #fff */
+  --color-mute: #8b8a85; /* secondary text */
+  --color-faint: #56554f; /* tertiary / disabled */
+
+  /* Accent — the neon orange underbrim */
+  --color-ember: #ff5412;
+  --color-ember-soft: #ff7a3c;
+  --color-ember-deep: #c23a06;
+
+  /* Type */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
+
+  /* Motion — shared easing so every transition feels like one hand made it */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* -----------------------------------------------------------------------------
+   Base
+----------------------------------------------------------------------------- */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scrollbar-width: none;
+  }
+  html::-webkit-scrollbar {
+    display: none;
+  }
+
+  body {
+    background: var(--color-void);
+    color: var(--color-bone);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv01";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: var(--color-ember);
+    color: #000;
+  }
+
+  /* Respect users who opt out of motion: kill Lenis smoothing entirely. */
+  @media (prefers-reduced-motion: reduce) {
+    html.lenis,
+    html.lenis body {
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   Reusable primitives — kept tiny and composable
+----------------------------------------------------------------------------- */
+@layer components {
+  /* Uppercase mono micro-label — the "technical luxury" tell */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--color-mute);
+  }
+
+  /* Full-bleed hairline */
+  .hairline {
+    height: 1px;
+    width: 100%;
+    background: var(--color-line);
+  }
+
+  /* The big editorial display setting used for the wordmark + section heads */
+  .display {
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 0.92;
+    text-wrap: balance;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   Utilities
+----------------------------------------------------------------------------- */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Radial spotlight used behind the product stage */
+  .stage-vignette {
+    background: radial-gradient(
+      120% 90% at 50% 38%,
+      #15151a 0%,
+      #0a0a0c 45%,
+      var(--color-void) 78%
+    );
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   Film grain
+   A faint animated noise layer over the whole page. It does double duty:
+   it hides 8-bit banding in the dark gradients (the classic spotlight-on-black
+   failure mode) AND is itself a premium dark-mode signature. Animated only with
+   transform (compositor-only — never triggers paint), so it costs ~nothing.
+----------------------------------------------------------------------------- */
+.grain {
+  position: fixed;
+  /* Oversized so the transform jitter never exposes an edge. */
+  inset: -150%;
+  width: 400%;
+  height: 400%;
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0.045;
+  mix-blend-mode: soft-light;
+  will-change: transform;
+  animation: grain-shift 0.7s steps(1) infinite;
+}
+
+@keyframes grain-shift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  10% {
+    transform: translate3d(-4%, -2%, 0);
+  }
+  20% {
+    transform: translate3d(2%, 3%, 0);
+  }
+  30% {
+    transform: translate3d(-3%, 4%, 0);
+  }
+  40% {
+    transform: translate3d(4%, -3%, 0);
+  }
+  50% {
+    transform: translate3d(-2%, 2%, 0);
+  }
+  60% {
+    transform: translate3d(3%, -4%, 0);
+  }
+  70% {
+    transform: translate3d(-4%, 3%, 0);
+  }
+  80% {
+    transform: translate3d(2%, -2%, 0);
+  }
+  90% {
+    transform: translate3d(-3%, -3%, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain {
+    animation: none;
+  }
+}
