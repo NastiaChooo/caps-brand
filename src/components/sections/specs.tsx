@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useMotionValueEvent, useScroll } from "framer-motion";
-import { useImageSequence } from "@/components/sequence/use-image-sequence";
+import { useDetailSequence } from "@/components/providers/sequence-preload";
 import { useSequenceCanvas } from "@/components/sequence/use-sequence-canvas";
-import { SequenceLoader } from "@/components/sequence/sequence-loader";
 import { Reveal } from "@/components/ui/reveal";
+import { range } from "@/lib/range";
 
 const SPEC = [
   ["Silhouette", "Structured six-panel"],
@@ -23,8 +23,9 @@ const SPEC = [
 const SCROLL_VH = 320;
 // Exact backdrop colour baked into the footage — the section and the `contain`
 // margins are painted the same, so the whole stage is one seamless field.
+// Mirrors the `--color-field` token; kept as a literal only because <canvas>
+// fillStyle can't read a CSS custom property.
 const FIELD = "#070808";
-const clamp01 = (n: number) => (n < 0 ? 0 : n > 1 ? 1 : n);
 
 /**
  * Spec — a second, scroll-scrubbed turntable.
@@ -39,12 +40,8 @@ export function Specs() {
   const track = useRef<HTMLElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const last = useRef(-1);
-  const [active, setActive] = useState(false);
 
-  const { manifest, frames, progress, ready } = useImageSequence(
-    "/sequence-2/manifest.json",
-    active
-  );
+  const { manifest, frames, ready } = useDetailSequence();
   // Bias the cap left of centre so the spotlight (which fills the full stage)
   // sits left, leaving the dark right of the field for the spec sheet.
   const { paint } = useSequenceCanvas(
@@ -61,26 +58,10 @@ export function Specs() {
     offset: ["start start", "end end"],
   });
 
-  useEffect(() => {
-    const el = track.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setActive(true);
-          io.disconnect();
-        }
-      },
-      { rootMargin: "150% 0px" }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
   const render = useCallback(
     (v: number) => {
       if (!manifest) return;
-      const fp = clamp01((v - 0.05) / (0.9 - 0.05));
+      const fp = range(v, 0.05, 0.9);
       const index = Math.round(fp * (manifest.frames - 1));
       if (index === last.current) return;
       last.current = index;
@@ -102,10 +83,7 @@ export function Specs() {
       style={{ height: `${SCROLL_VH}vh` }}
       className="relative border-t border-line"
     >
-      <div
-        className="sticky top-0 h-[100svh] w-full overflow-hidden"
-        style={{ background: FIELD }}
-      >
+      <div className="sticky top-0 h-[100svh] w-full overflow-hidden bg-field">
         {/* Cap — full-bleed stage on desktop (no region boundary, so the
             studio spotlight reads as one field, not a seam); top region on
             mobile with the sheet below. `contain` keeps the whole cap and the
@@ -121,10 +99,9 @@ export function Specs() {
             className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 md:block"
             style={{
               background:
-                "linear-gradient(to left, #070808 0%, rgba(7,8,8,0.65) 38%, transparent 100%)",
+                "linear-gradient(to left, var(--color-field) 0%, color-mix(in srgb, var(--color-field) 65%, transparent) 38%, transparent 100%)",
             }}
           />
-          <SequenceLoader progress={progress} done={ready} />
         </div>
 
         {/* Spec sheet — below the cap on mobile, right of it on desktop */}

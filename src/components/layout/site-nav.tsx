@@ -25,12 +25,12 @@ export function SiteNav() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 flex justify-center transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+      className={`fixed inset-x-0 top-0 z-50 flex justify-center transition-[padding] duration-500 ease-[var(--ease-out-soft)] ${
         scrolled ? "px-3 pt-3 sm:px-4 sm:pt-4" : "px-0 pt-0"
       }`}
     >
       <div
-        className={`flex w-full items-center justify-between gap-6 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`flex w-full items-center justify-between gap-6 transition-[max-width,padding,border-radius,background-color,border-color,box-shadow] duration-500 ease-[var(--ease-out-soft)] ${
           scrolled
             ? "max-w-3xl rounded-full border border-line bg-void/60 px-5 py-3 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.7)] backdrop-blur-xl sm:px-6"
             : "max-w-7xl rounded-none border border-transparent bg-transparent px-6 py-5 lg:px-10"

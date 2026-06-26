@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { SmoothScroll } from "@/components/providers/smooth-scroll";
+import { SequencePreload } from "@/components/providers/sequence-preload";
 import { Grain } from "@/components/ui/grain";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
 
@@ -67,7 +68,7 @@ export default function RootLayout({
       <body className="antialiased">
         <SmoothScroll>
           <ScrollProgress />
-          {children}
+          <SequencePreload>{children}</SequencePreload>
         </SmoothScroll>
         <Grain />
       </body>

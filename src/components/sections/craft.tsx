@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useMotionValueEvent, useScroll } from "framer-motion";
 import { Reveal } from "@/components/ui/reveal";
+import { range } from "@/lib/range";
 
 const PILLARS = [
   {
@@ -26,8 +27,6 @@ const PILLARS = [
 // Pinned act: the plate holds while the pillars are scrubbed in, then a short
 // fade hands off to the next section.
 const CRAFT_VH = 220;
-const clamp01 = (n: number) => (n < 0 ? 0 : n > 1 ? 1 : n);
-const range = (v: number, a: number, b: number) => clamp01((v - a) / (b - a));
 
 /**
  * Craft — a pinned plate. The photo stays fixed while you scroll; each pillar
@@ -53,7 +52,6 @@ export function Craft() {
       const p = range(v, start, start + 0.17);
       el.style.clipPath = `inset(0 ${(1 - p) * 100}% 0 0)`;
       el.style.opacity = String(p);
-      el.style.filter = `blur(${(1 - p) * 5}px)`;
     }
     // Dissolve to the dark once the text has fully resolved.
     if (fade.current) fade.current.style.opacity = String(range(v, 0.86, 1));

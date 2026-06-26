@@ -2,9 +2,9 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import { useMotionValueEvent, useScroll } from "framer-motion";
-import { useImageSequence } from "./use-image-sequence";
+import { range } from "@/lib/range";
+import { useHeroSequence } from "@/components/providers/sequence-preload";
 import { useSequenceCanvas } from "./use-sequence-canvas";
-import { SequenceLoader } from "./sequence-loader";
 
 /**
  * ScrollSequence — the centerpiece.
@@ -32,21 +32,16 @@ const SCROLL_VH = 560;
 const FRAME_START = 0.08; // beat for the wordmark before the cap moves
 const FRAME_END = 0.82; // climax lands here; 0.82→1 holds it in focus
 
-const clamp01 = (n: number) => (n < 0 ? 0 : n > 1 ? 1 : n);
-/** progress mapped onto [a,b] → 0..1 */
-const range = (v: number, a: number, b: number) => clamp01((v - a) / (b - a));
-
 export function ScrollSequence() {
   const track = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const wordmark = useRef<HTMLDivElement>(null);
   const cue = useRef<HTMLDivElement>(null);
   const caption = useRef<HTMLDivElement>(null);
-  const captionText = useRef<HTMLParagraphElement>(null);
   const readout = useRef<HTMLSpanElement>(null);
   const lastFrame = useRef(-1);
 
-  const { manifest, frames, progress, ready } = useImageSequence();
+  const { manifest, frames, ready } = useHeroSequence();
   const { paint } = useSequenceCanvas(canvas, frames, manifest);
 
   const { scrollYProgress } = useScroll({
@@ -94,12 +89,9 @@ export function ScrollSequence() {
         caption.current.style.transform = `translate3d(0,${
           90 * (1 - e)
         }px,0) scale(${0.94 + 0.06 * e})`;
-        // The ember line glows brighter as it settles into focus.
-        if (captionText.current) {
-          captionText.current.style.textShadow = `0 0 ${52 * e}px rgba(255, 84, 18, ${
-            0.6 * e
-          }), 0 0 ${18 * e}px rgba(255, 122, 60, ${0.5 * e})`;
-        }
+        // The ember glow is a static CSS halo (`.glow-ember`); it ignites
+        // automatically as the caption's own opacity fades in — no per-tick
+        // text-shadow repaint.
       }
     },
     [manifest, paint]
@@ -171,15 +163,10 @@ export function ScrollSequence() {
           className="pointer-events-none absolute inset-x-0 bottom-[12vh] flex flex-col items-center px-6 text-center will-change-transform"
         >
           <span className="eyebrow mb-4 text-ember">The reveal</span>
-          <p
-            ref={captionText}
-            className="font-serif text-[clamp(2.1rem,5.2vw,3.6rem)] italic leading-tight text-bone"
-          >
+          <p className="font-serif text-[clamp(2.1rem,5.2vw,3.6rem)] italic leading-tight text-bone glow-ember">
             A flash of ember — seen only by you.
           </p>
         </div>
-
-        <SequenceLoader progress={progress} done={ready} />
       </div>
     </section>
   );

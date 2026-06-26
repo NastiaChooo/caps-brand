@@ -107,7 +107,17 @@ export function useSequenceCanvas(
       }
       backW = w;
       backH = h;
-      if (lastIndex >= 0) paint(lastIndex, true);
+      if (lastIndex >= 0) {
+        paint(lastIndex, true);
+      } else {
+        // No frame decoded yet. An `alpha: false` canvas renders opaque *black*
+        // until first paint — which would flash a black box if a user lands on
+        // this section before its frames are ready (e.g. clicking a nav anchor
+        // straight to it). Fill the section's backdrop instead, so the worst
+        // case is a seamless dark field the cap fades into.
+        ctx.fillStyle = bgFill;
+        ctx.fillRect(0, 0, w, h);
+      }
     };
 
     painterRef.current = paint;
