@@ -56,8 +56,8 @@ export function useImageSequence(
   const frames = useRef<HTMLImageElement[]>([]);
 
   useEffect(() => {
-    // `enabled` lets a secondary sequence defer its (multi-MB) preload until the
-    // viewer is near the viewport, so it never competes with the hero.
+    // `enabled` lets the preloader skip a sequence a given visitor won't need —
+    // e.g. the hero footage is never fetched under reduced motion (static poster).
     if (!enabled) return;
     let cancelled = false;
 

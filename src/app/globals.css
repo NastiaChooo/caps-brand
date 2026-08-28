@@ -11,6 +11,7 @@
   /* Stage */
   --color-void: #060607; /* page base — near-black, faint cool cast */
   --color-stage: #0a090b; /* product-footage backdrop — frames bleed into it */
+  --color-field: #070808; /* spec-section field — matches that footage's baked backdrop */
   --color-ink: #0b0b0e; /* raised panels */
   --color-surface: #121216; /* cards */
   --color-line: #ffffff14; /* hairline rules (8% white) */
@@ -108,6 +109,15 @@
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Ember halo for the climax line. Static — it ignites via the parent's
+     opacity fade (composited), so there's no per-scroll-tick text-shadow
+     repaint. color-mix keeps it tied to the ember token, not a raw rgba. */
+  .glow-ember {
+    text-shadow:
+      0 0 3.25rem color-mix(in srgb, var(--color-ember) 60%, transparent),
+      0 0 1.1rem color-mix(in srgb, var(--color-ember-soft) 50%, transparent);
   }
 
   /* Radial spotlight used behind the product stage */

@@ -4,10 +4,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import { EASE_OUT } from "@/lib/motion";
 
 /**
- * The preloader shown over the stage until every frame is decoded. It is part
- * of the experience, not an afterthought: a held black frame, a hairline that
- * fills, a monospace count. Letting the sequence pop in half-loaded would be the
- * tell of an amateur scrub.
+ * The single, full-screen preloader shown at page load until every sequence is
+ * decoded (driven by `SequencePreload`). It is part of the experience, not an
+ * afterthought: a held black frame, a hairline that fills, a monospace count.
+ * Letting the sequences pop in half-loaded would be the tell of an amateur scrub.
  */
 export function SequenceLoader({
   progress,
@@ -22,7 +22,7 @@ export function SequenceLoader({
     <AnimatePresence>
       {!done && (
         <motion.div
-          className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-void"
+          className="fixed inset-0 z-[70] flex flex-col items-center justify-center bg-void"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.9, ease: EASE_OUT }}
